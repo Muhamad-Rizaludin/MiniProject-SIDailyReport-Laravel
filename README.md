@@ -1,4 +1,4 @@
-# Frontend Attendance System using laravel
+# Frontend Attendance management System using laravel
 
 ## Setup Instructions
 
