@@ -1,169 +1,111 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
-use App\Models\KaryawanModel;
+use App\Models\KelasModel;
 use app\Helpers\Helper;
 use App\Models\karyawan;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class KarController extends Controller
 {
-    
+
     public function __construct()
     {
-        $this->KaryawanModel = new KaryawanModel();
+        $this->KelasModel = new KelasModel();
     }
 
     public function index() // Memanggi data di tabel karyawan
     {
-       $data = [
-           'karyawan' => $this->KaryawanModel->alldata(),
-       ];
-       return view('v_karyawan',$data);
-    }
-    public function tambah() // mebuat kode karyawan otomatis
-    {
-        $data =[
-            'user' => $this->KaryawanModel->alldatauser(),
-            'jabatan' => $this->KaryawanModel->alldatajab(),
-            'jobdesk' => $this->KaryawanModel->alldatajob(),
-            
+        $data = [
+            'kelas' => $this->KelasModel->alldata(),
         ];
-       return view('createkaryawan',$data);
+        return view('v_kelas', $data);
     }
     public function tambahdata()
     {
-        //validasi data
-        Request()->validate([
-            'NoKaryawan' => 'required',
-            'NamaKaryawan' => 'required',
-            'jabatan' => 'required',
-            'jobdesk' => 'required',
-            'alamat' => 'required',
-            'JenisKelamin' => 'required',
-            'foto' => 'required|mimes:jpg,jpeg,bmp,png|max:1024',
-            
-        ],[
-            //custome pesan
-            'NoKaryawan.required' => 'NO Karyawan Wajib Di Isi !!!',
-            'NamaKaryawan.required' => 'Nama Karyawan Wajib Di Isi !!!',
-            'jabatan.required' => 'jabatan Wajib Di Isi !!!',
-            'jobdesk.required' => 'Nama Karyawan Wajib Di Isi !!!',
-            'alamat.required' => 'Alamat Wajib Di Isi !!!',
-            'JenisKelamin.required' => 'Pilih Jenis Kelamin !!!',
-            'foto.required' => 'Foto Wajib di isi !!!',
-            
-        ]);
-        //untuk menyimpan lokasi file foto
-        $foto = time().'.'.Request()->foto->extension();  
-        Request()->foto->move(public_path('foto_user'), $foto);
-        //simpan data ke database
-        $data =[
-            'NoKaryawan' => Request()->NoKaryawan,
-            'NamaKaryawan' => Request()->NamaKaryawan,
-            'jabatan' => Request()->jabatan,
-            'jobdesk' => Request()->jobdesk,
-            'alamat' => Request()->alamat,
-            'JenisKelamin' => Request()->JenisKelamin,
-            'foto' => $foto,
-
-        ];
-        $this->KaryawanModel->tambahdata($data);
-        return redirect()->route('dashboard.karyawan')->with('pesan','Data Telah Berhasil Disimpan!!!');
-    }
-    public function detail($id)
-    {
-        if(!$this->KaryawanModel->detailkaryawan($id))
-        {
-            abort (404);
-        }
-       $data = [
-           'karyawan' => $this->KaryawanModel->detailkaryawan($id),
-       ];
-       return view('v_detailkaryawan',$data);
-    }
-    public function edit($id)
-    {
-        if(!$this->KaryawanModel->detailkaryawan($id))
-        {
-            abort (404);
-        }
-       $data = [
-        'karyawan' => $this->KaryawanModel->detailkaryawan($id),
-        'user' => $this->KaryawanModel->alldatauser(),
-        'jabatan' => $this->KaryawanModel->alldatajab(),
-        'jobdesk' => $this->KaryawanModel->alldatajob(),
-        ];
-        return view('editkaryawan',$data);
-
-    }
-    public function updatekar($id)
-    {
-       //validasi from laravel
-       Request()->validate([
-            'NoKaryawan' => 'required',
-            'NamaKaryawan' => 'required',
-            'jabatan' => 'required',
-            'jobdesk' => 'required',
-            'alamat' => 'required',
-            'JenisKelamin' => 'required',
-            'foto_user' =>'mimes:jpg,jpeg,bmp,png|max:1024',
-        ],[
-            // custome pesan
-            'NoKaryawan.required' => 'NO Karyawan Wajib Di Isi !!!',
-            'NamaKaryawan.required' => 'Nama Karyawan Wajib Di Isi !!!',
-            'jabatan.required' => 'jabatan Wajib Di Isi !!!',
-            'jobdesk.required' => 'Nama Karyawan Wajib Di Isi !!!',
-            'alamat.required' => 'Alamat Wajib Di Isi !!!',
-            'JenisKelamin.required' => 'Pilih Jenis Kelamin !!!',
-            'foto.required' => 'Foto Wajib di isi !!!',
-        ]);
-
-    //untuk update data user
-    if (Request()->foto <> "")
-    {
-            //untuk menyimpan lokasi file foto
-            $foto = time().'.'.Request()->foto->extension();  
-            Request()->foto->move(public_path('foto_user'), $foto);
-
-        //simpan ke database
         $data = [
-            'NoKaryawan' => Request()->NoKaryawan,
-            'NamaKaryawan' => Request()->NamaKaryawan,
-            'jabatan' => Request()->jabatan,
-            'jobdesk' => Request()->jobdesk,
-            'alamat' => Request()->alamat,
-            'JenisKelamin' => Request()->JenisKelamin,
-            'foto' => $foto,
+            'kode_kelas' => Request()->kode_kelas,
+            'nama_mk' => Request()->nama_mk,
+            'kode_mk' => Request()->kode_mk,
+            'nama_dosen' => Request()->nama_dosen,
+            'kode_dosen' => Request()->kode_dosen,
+            // 'nim' => Request()->nim,
+            // 'nama_mhs' => Request()->nama_mhs,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ];
-        $this->KaryawanModel->updatedata($id, $data);
+        $this->KelasModel->tambahdata($data);
+        return redirect()->route('dashboard.kelas')->with('pesan', 'Data Telah Berhasil Disimpan!!!');
     }
-    else
+
+    public function updatekar($kode_kelas)
     {
         $data = [
-            'NoKaryawan' => Request()->NoKaryawan,
-            'NamaKaryawan' => Request()->NamaKaryawan,
-            'jabatan' => Request()->jabatan,
-            'jobdesk' => Request()->jobdesk,
-            'alamat' => Request()->alamat,
-            'JenisKelamin' => Request()->JenisKelamin,
+            'kode_kelas' => Request()->kode_kelas,
+            'nama_mk' => Request()->nama_mk,
+            'kode_mk' => Request()->kode_mk,
+            'nama_dosen' => Request()->nama_dosen,
+            'kode_dosen' => Request()->kode_dosen,
+            // 'nim' => Request()->nim,
+            // 'nama_mhs' => Request()->nama_mhs,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ];
-        $this->KaryawanModel->updatedata($id, $data);
+        $this->KelasModel->updatedata($kode_kelas, $data);
+        return redirect()->route('dashboard.kelas')->with('pesan', 'Data Telah Berhasil DiUpdate !!!');
     }
-    return redirect()->route('dashboard.karyawan')->with('pesan','Data Telah Berhasil DiUpdate !!!');
-    }
-    public function destroy( $id)
+
+    public function getMahasiswa()
     {
-        if(!$this->KaryawanModel->detailkaryawan($id))
-        {
-            abort (404);
-        }
-        $data = [
-            'karyawan' => $this->KaryawanModel->detailkaryawan($id),
-        ];
-        $this->KaryawanModel->hapusdata($id, $data);
-        return redirect()->route('dashboard.karyawan')->with('pesan','Data Telah Berhasil DiHapus !!!');
+        $mahasiswa = $this->KelasModel->getMhs();
+
+        return response()->json(['mahasiswa' => $mahasiswa]);
+    }
+
+    public function getNim(Request $request)
+    {
+        $namaMhs = $request->input('nama_mhs');
+        $nim = $this->KelasModel->getNimByNamaMhs($namaMhs);
+
+        return response()->json(['nim' => $nim]);
+    }
+    public function getMatakuliah()
+    {
+        $matakuliah = $this->KelasModel->getMatakuliah();
+
+        return response()->json(['matakuliah' => $matakuliah]);
+    }
+
+    public function getKodeMk(Request $request)
+    {
+        $namaMk = $request->input('nama_mk');
+        $kode_mk = $this->KelasModel->getKodeMkByNamaMk($namaMk);
+
+        return response()->json(['kode_mk' => $kode_mk]);
+    }
+
+    public function getDosen()
+    {
+        $dosen = $this->KelasModel->getNamaDosen();
+
+        return response()->json(['dosen' => $dosen]);
+    }
+
+    public function getKodeDosen(Request $request)
+    {
+        $namaDosen = $request->input('nama_dosen');
+        $kode_dosen = $this->KelasModel->getKodeDosenByNamaDosen($namaDosen);
+
+        return response()->json(['kode_dosen' => $kode_dosen]);
+    }
+
+    public function destroy($kode_kelas)
+    {
+        $this->KelasModel->hapusdata($kode_kelas);
+        return redirect()->route('dashboard.kelas')->with('pesan', 'Data Telah Berhasil DiHapus !!!');
     }
 }

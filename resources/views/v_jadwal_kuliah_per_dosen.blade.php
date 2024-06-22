@@ -13,22 +13,16 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('template')}}/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-
+    <link rel="stylesheet" href="{{asset('template')}}https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{asset('template')}}/dist/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
+    <link href="{{asset('template')}}https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!--Theme style -->
     <link rel="stylesheet" href="{{asset('template')}}/dist/css/adminlte.min.css">
     <!-- DataTables -->
-    <!-- <link rel="stylesheet" href="{{asset('template')}}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{{asset('template')}}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="{{asset('template')}}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="{{asset('template')}}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css"> -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
-
 
 </head>
 
@@ -96,12 +90,12 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6">
-                            <p>Laporan Presensi</p>
+                            <p>Jadwal Perkuliahan</p>
                         </div>
                         <div class="ml-auto">
                             <ol class="breadcrumb float-right">
                                 <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
-                                <li class="breadcrumb-item active">Laporan Presensi</li>
+                                <li class="breadcrumb-item active">Jadwal Perkuliahan</li>
                             </ol>
                         </div>
                     </div>
@@ -121,39 +115,46 @@
                     <!-- form start -->
 
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="filterMatakuliah">Pilih Matakuliah : </label>
-                            </div>
-                            <div class="col-md-2" style="margin-left: -70px;">
-                                <select id="filterMatakuliah" class="form-control">
-                                    <option value="">Semua Matakuliah</option>
-                                </select>
-                            </div>
-                        </div>
                         <br>
+                        @if(session('pesan'))
+                        <div class="alert alert-success alert-dimissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h5><i class="icon fas fa-check"></i> Success!</h5>
+                            {{(session('pesan'))}}.
+                        </div>
+                        @endif
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th> No</th>
-                                    <th> nim</th>
-                                    <th> Nama Mahasiswa</th>
+                                    <th> No </th>
+                                    <th> Kode Jadwal</th>
+                                    <th> Kode Kelas</th>
                                     <th> Nama Matakuliah</th>
-                                    <th> Status</th>
-                                    <th> Waktu Presensi</th>
-
+                                    <th> Kode Matakuliah</th>
+                                    <th> Wajib SKS</th>
+                                    <th> Tanggal</th>
+                                    <th> Mulai</th>
+                                    <th> Selesai</th>
+                                    <th> Action </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $id = 1; ?>
-                                @foreach ($presensi as $data)
+                                @foreach ($jadwalkelas as $data)
                                 <tr>
                                     <td> {{ $id++ }} </td>
-                                    <td> {{ $data->nim }} </td>
-                                    <td> {{ $data->nama_mhs}} </td>
+                                    <td> {{ $data->kd_jadwal }} </td>
+                                    <td> {{ $data->kode_kelas}} </td>
                                     <td> {{ $data->nama_mk }} </td>
-                                    <td> {{ $data->status }} </td>
-                                    <td> {{ $data->waktu_absen}} </td>
+                                    <td> {{ $data->kode_mk }} </td>
+                                    <td> {{ $data->wajib_sks}} </td>
+                                    <td> {{ now()->format('Y-m-d') }} </td>
+                                    <td> {{ \Carbon\Carbon::parse($data->mulai)->format('H:i')}} </td>
+                                    <td> {{ \Carbon\Carbon::parse($data->selesai)->format('H:i')}} </td>
+                                    <td>
+                                    <a href="/dashboard/jadwalkuliah/dosen/detail/{{$data->kd_jadwal}}" class="btn btn-sm btn-warning">Detail</a>
+
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -194,54 +195,17 @@
     <script src="{{asset('template')}}/dist/js/demo.js"></script>
 
     <!-- DataTables -->
-    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.bootstrap.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
-
+    <script src="{{asset('template')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('template')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{{asset('template')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="{{asset('template')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            var table = $("#example1").DataTable({
-                dom: 'Bfrtip',
-                buttons: [{
-                    extend: 'excel',
-                    className: 'btn btn-success bg-success mb-1',
-                    text: ' <i class="fas fa-download"></i> Unduh',
-                    filename: 'laporan_presensi',
-                    title: 'Laporan Presensi Mahasiswa',
-                }, ],
+        $(function() {
+            $("#example1").DataTable({
                 "responsive": true,
                 "autoWidth": false,
                 "paging": true,
-
-            });
-
-            // Handle the select element's change event
-            $('#filterMatakuliah').on('change', function() {
-                var filterValue = $(this).val();
-                table.column(3).search(filterValue).draw();
-            });
-
-            $.ajax({
-                url: '/getmatkul', // for add modal Change this URL to your actual route for fetching matakuliah data
-                method: 'GET',
-                success: function(response) {
-                    var options = '';
-                    response.matakuliah.forEach(function(namaMk) {
-                        options += '<option value="' + namaMk + '">' + namaMk + '</option>';
-                    });
-                    $('#filterMatakuliah').append(options);
-                },
-                error: function(error) {
-                    console.error('Error fetching matakuliah:', error);
-                }
             });
         });
     </script>
